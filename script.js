@@ -241,6 +241,13 @@ function validarDatosPedido() {
     return null;
   }
 
+  // Validar que las promos tengan bebidas seleccionadas
+  const promosSinBebidas = carrito.filter(item => item.esPromo && !item.bebidasSeleccionadas);
+  if (promosSinBebidas.length > 0) {
+    mostrarNotificacion("❌ Debes elegir las bebidas gratis para tus promos antes de continuar", 'error');
+    return null;
+  }
+
   const nombre = safeGetElement("pedido-nombre")?.value.trim();
   const direccion = safeGetElement("pedido-direccion")?.value.trim();
   const telefono = safeGetElement("pedido-telefono")?.value.trim();
