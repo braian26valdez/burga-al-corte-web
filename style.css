@@ -1188,8 +1188,8 @@ html {
   text-align: center;
 }
 .opciones-pago {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: center;
   gap: 0.8rem;
   margin-bottom: 0.8rem;
 }
