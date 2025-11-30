@@ -1381,7 +1381,7 @@ window.mostrarProductosRespaldo = function() {
     { nombre: "Seven Up", precio: 2500, categoria: "bebidas", descripcion: "Gaseosa fría de 500ml. Seven Up", imagen: "./fotos/bebidas/seven-up.jpg" },
     // Extras
     { nombre: "Aros de cebolla", precio: 5000, categoria: "extra", descripcion: "Aros de cebolla + papas fritas + alioli", imagen: "./fotos/extras/aros-de-cebolla-caseros-crujientes.jpg" },
-    { nombre: "Bastones de mozzarella", precio: 7000, categoria: "extra", descripcion: "Bastones de mozzarella + papas fritas + alioli", imagen: "./fotos/extras/bastones-de-mozzarella.jpg" },
+    { nombre: "Bastones de mozzarella", precio: 7500, categoria: "extra", descripcion: "Bastones de mozzarella + papas fritas + alioli", imagen: "./fotos/extras/bastones-de-mozzarella.jpg" },
     { nombre: "Flan", precio: 5000, categoria: "extra", descripcion: "Flan casero", imagen: "./fotos/extras/flan.jpg" }
   ];
   window.mostrarProductos(productos);
