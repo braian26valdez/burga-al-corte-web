@@ -304,6 +304,7 @@
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
     import { getFirestore, collection, addDoc, getDocs, setDoc, doc, runTransaction, getDoc } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
+    // BASE DE DATOS PRINCIPAL
     const firebaseConfig = {
   apiKey: "AIzaSyCOkXZe6EEKKUR2Sua0WuViwRQtgfZn-c0",
   authDomain: "la-burga-al-corte.firebaseapp.com",
@@ -315,32 +316,98 @@
   measurementId: "G-S06FL6RRLG"
     };
 
+    // BASE DE DATOS DE RESPALDO (automática si falla la principal)
+    const firebaseConfigRespaldo = {
+  apiKey: "AIzaSyBT_wvHZwRwDIiVqCOt8TKdh9yYQJDI0nI",
+  authDomain: "burga-al-cortee.firebaseapp.com",
+  projectId: "burga-al-cortee",
+  storageBucket: "burga-al-cortee.firebasestorage.app",
+  messagingSenderId: "116762550328886072238",
+  appId: "1:116762550328886072238:web:8c7f3f5b9e8d4a1c2b3d4e"
+    };
+
     let db = null;
     let firebaseInicializado = false;
+    let usandoRespaldo = false; // Indica si estamos usando la BD de respaldo
     
-    // Inicialización de Firebase BAJO DEMANDA
+    // Inicialización de Firebase BAJO DEMANDA con sistema de respaldo automático
     async function inicializarFirebase() {
       if (firebaseInicializado) return; // Evitar múltiples inicializaciones
       
       try {
-        console.log("🔄 Conectando a Firebase bajo demanda...");
+        console.log("🔄 Conectando a Firebase (base de datos principal)...");
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         window.db = db; // Exponer también en scope global
+        
+        // Verificar que la base de datos funciona correctamente
+        await verificarConexionFirebase();
+        
         firebaseInicializado = true;
-        console.log("✅ Firebase conectado correctamente");
+        usandoRespaldo = false;
+        console.log("✅ Firebase conectado correctamente (base de datos principal)");
         
         // Inicializar sistema de IDs únicos si es necesario
         await inicializarSistemaIds();
         
-        // NO cargar productos automáticamente - solo cuando se necesiten
         console.log("🎯 Firebase listo para usar bajo demanda");
         
         return true;
       } catch (error) {
-        console.log("❌ Error conectando Firebase:", error);
+        console.log("⚠️ Error conectando a base de datos principal:", error);
+        console.log("🔄 Intentando conectar a base de datos de respaldo...");
+        
+        // Intentar con base de datos de respaldo
+        return await inicializarFirebaseRespaldo();
+      }
+    }
+    
+    // Función para inicializar Firebase con la base de datos de respaldo
+    async function inicializarFirebaseRespaldo() {
+      try {
+        console.log("🔄 Conectando a Firebase (base de datos de respaldo)...");
+        const appRespaldo = initializeApp(firebaseConfigRespaldo, 'respaldo');
+        db = getFirestore(appRespaldo);
+        window.db = db;
+        
+        // Verificar conexión
+        await verificarConexionFirebase();
+        
+        firebaseInicializado = true;
+        usandoRespaldo = true;
+        console.log("✅ Firebase conectado correctamente (base de datos de RESPALDO)");
+        console.log("ℹ️ La página está funcionando con la base de datos de respaldo");
+        
+        // Inicializar sistema de IDs únicos
+        await inicializarSistemaIds();
+        
+        console.log("🎯 Firebase de respaldo listo para usar");
+        
+        return true;
+      } catch (errorRespaldo) {
+        console.log("❌ Error conectando a base de datos de respaldo:", errorRespaldo);
         firebaseInicializado = false;
+        usandoRespaldo = false;
         return false;
+      }
+    }
+    
+    // Función para verificar que la conexión a Firebase funciona
+    async function verificarConexionFirebase() {
+      if (!db) throw new Error('Base de datos no inicializada');
+      
+      try {
+        // Intentar leer el contador de pedidos (operación simple)
+        const contadorRef = doc(db, 'sistema', 'contador_pedidos');
+        await getDoc(contadorRef);
+        console.log("✅ Conexión a Firebase verificada correctamente");
+      } catch (error) {
+        console.log("⚠️ Error verificando conexión:", error);
+        // Si es error de cuota, lo lanzamos para activar respaldo
+        if (error.code === 'resource-exhausted' || error.message.includes('quota')) {
+          throw new Error('Cuota de Firebase excedida');
+        }
+        throw error;
       }
     }
     
@@ -409,9 +476,30 @@
         return nuevoId;
       } catch (error) {
         console.error('❌ Error obteniendo ID único:', error);
+        
+        // Si es error de cuota y estamos en BD principal, cambiar a respaldo
+        if (!usandoRespaldo && (error.code === 'resource-exhausted' || error.message.includes('quota'))) {
+          console.log('⚠️ Cuota excedida, cambiando a base de datos de respaldo...');
+          
+          try {
+            firebaseInicializado = false;
+            db = null;
+            window.db = null;
+            
+            const exitoRespaldo = await inicializarFirebaseRespaldo();
+            
+            if (exitoRespaldo && db) {
+              console.log('✅ Cambiado a respaldo, reintentando obtener ID...');
+              return await window.getNextPedidoId();
+            }
+          } catch (errorRespaldo) {
+            console.error('❌ Error cambiando a respaldo:', errorRespaldo);
+          }
+        }
+        
         // Fallback: intentar con el método anterior como respaldo
         try {
-          console.log('⚠️ Usando método de respaldo...');
+          console.log('⚠️ Usando método de respaldo alternativo...');
           const snapshot = await getDocs(collection(db, 'pedidos'));
           let maxId = 0;
           
@@ -490,9 +578,42 @@
         await setDoc(doc(db, 'pedidos', proximoId.toString()), docData);
         console.log('✅ Documento guardado exitosamente');
         
+        if (usandoRespaldo) {
+          console.log('ℹ️ Pedido guardado en base de datos de RESPALDO');
+        }
+        
         return proximoId.toString();
       } catch (error) {
         console.error('❌ Error detallado guardando pedido:', error);
+        
+        // Si el error es de cuota excedida y estamos usando BD principal, cambiar a respaldo
+        if (!usandoRespaldo && (error.code === 'resource-exhausted' || error.message.includes('quota'))) {
+          console.log('⚠️ Cuota de base de datos principal excedida');
+          console.log('🔄 Cambiando automáticamente a base de datos de respaldo...');
+          
+          try {
+            // Reinicializar con base de datos de respaldo
+            firebaseInicializado = false;
+            db = null;
+            window.db = null;
+            
+            const exitoRespaldo = await inicializarFirebaseRespaldo();
+            
+            if (exitoRespaldo && db) {
+              console.log('✅ Cambiado a base de datos de respaldo exitosamente');
+              console.log('🔄 Reintentando guardar pedido...');
+              
+              // Reintentar guardar el pedido con la BD de respaldo
+              return await window.guardarEnFirebase(pedidoData);
+            } else {
+              throw new Error('No se pudo conectar a base de datos de respaldo');
+            }
+          } catch (errorRespaldo) {
+            console.error('❌ Error cambiando a base de datos de respaldo:', errorRespaldo);
+            throw new Error('Error guardando pedido: bases de datos no disponibles');
+          }
+        }
+        
         throw error;
       }
     };
@@ -525,6 +646,9 @@
         
         if (productos.length > 0) {
           console.log(`✅ ${productos.length} productos cargados desde Firebase`);
+          if (usandoRespaldo) {
+            console.log('ℹ️ Productos cargados desde base de datos de RESPALDO');
+          }
           window.mostrarProductos(productos);
         } else {
           console.log('⚠️ No se encontraron productos en Firebase, usando respaldo');
@@ -532,8 +656,38 @@
         }
       } catch (error) {
         console.error('❌ Error cargando productos desde Firebase:', error);
-        console.log('🔄 Usando productos de respaldo...');
-        window.mostrarProductosRespaldo();
+        
+        // Si el error es de cuota y estamos en BD principal, cambiar a respaldo
+        if (!usandoRespaldo && (error.code === 'resource-exhausted' || error.message.includes('quota'))) {
+          console.log('⚠️ Cuota de base de datos principal excedida');
+          console.log('🔄 Cambiando automáticamente a base de datos de respaldo...');
+          
+          try {
+            // Reinicializar con base de datos de respaldo
+            firebaseInicializado = false;
+            db = null;
+            window.db = null;
+            
+            const exitoRespaldo = await inicializarFirebaseRespaldo();
+            
+            if (exitoRespaldo && db) {
+              console.log('✅ Cambiado a base de datos de respaldo');
+              console.log('🔄 Reintentando cargar productos...');
+              
+              // Reintentar cargar productos
+              return await window.cargarProductosDesdeFirebase();
+            } else {
+              console.log('⚠️ No se pudo conectar a respaldo, usando productos locales');
+              window.mostrarProductosRespaldo();
+            }
+          } catch (errorRespaldo) {
+            console.error('❌ Error cambiando a respaldo:', errorRespaldo);
+            window.mostrarProductosRespaldo();
+          }
+        } else {
+          console.log('🔄 Usando productos de respaldo...');
+          window.mostrarProductosRespaldo();
+        }
       }
     };
 
