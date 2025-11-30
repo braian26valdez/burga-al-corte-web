@@ -738,26 +738,26 @@
     window.mostrarProductosRespaldo = function() {
       const productos = [
         // Hamburguesas
-        { nombre: "Smash", precio: 9000, categoria: "hamburguesa", descripcion: "Medallón simple, cheddar, nuestra salsa especial + papas fritas ", imagen: "./fotos/hamburguesas/smash.jpg" },
-        { nombre: "Crypton", precio: 9000, categoria: "hamburguesa", descripcion: "simple medallon, cebolla caramelizada y queso roquefort + papas fritas", imagen: "./fotos/hamburguesas/cripton.jpg" },
-        { nombre: "Wave", precio: 9000, categoria: "hamburguesa", descripcion: "simple medallón, queso provolone y mayocriolla + papas fritas", imagen: "./fotos/hamburguesas/wave.jpg" },
-        { nombre: "AX100", precio: 11500, categoria: "hamburguesa", descripcion: "Doble medallón, doble cheddar crujientes y doble bacon + papas fritas", imagen: "./fotos/hamburguesas/ax100.jpg" },
-        { nombre: "YBR", precio: 12000, categoria: "hamburguesa", descripcion: "doble medallón, doble cheddar crujientes, cebolla caramelizada y salsa barbacoa + papas fritas", imagen: "./fotos/hamburguesas/ybr.jpg" },
-        { nombre: "Tornado 293", precio: 12500, categoria: "hamburguesa", descripcion: "doble medallón, doble cheddar, morron asado y salsa pro tork + papas fritas", imagen: "./fotos/hamburguesas/tornado293.jpg" },
-        { nombre: "FAN", precio: 14500, categoria: "hamburguesa", descripcion: "triple medallón, triple cheddar, triple bacon crujientes y salsa butaquera + papas fritas", imagen: "./fotos/hamburguesas/fan.jpg" },
-        { nombre: "ax115", precio: 18500, categoria: "hamburguesa", descripcion: "5 medallón, 5 cheddar, 5 bacon crujientes y salsa butaquera + papas fritas", imagen: "./fotos/hamburguesas/ax115.jpg" },
+        { nombre: "Smash", precio: 10000, categoria: "hamburguesa", descripcion: "Medallón simple, cheddar, nuestra salsa especial + papas fritas ", imagen: "./fotos/hamburguesas/smash.jpg" },
+        { nombre: "Crypton", precio: 10000, categoria: "hamburguesa", descripcion: "simple medallon, cebolla caramelizada y queso roquefort + papas fritas", imagen: "./fotos/hamburguesas/cripton.jpg" },
+        { nombre: "Wave", precio: 10000, categoria: "hamburguesa", descripcion: "simple medallón, queso provolone y mayocriolla + papas fritas", imagen: "./fotos/hamburguesas/wave.jpg" },
+        { nombre: "AX100", precio: 12500, categoria: "hamburguesa", descripcion: "Doble medallón, doble cheddar crujientes y doble bacon + papas fritas", imagen: "./fotos/hamburguesas/ax100.jpg" },
+        { nombre: "YBR", precio: 13500, categoria: "hamburguesa", descripcion: "doble medallón, doble cheddar crujientes, cebolla caramelizada y salsa barbacoa + papas fritas", imagen: "./fotos/hamburguesas/ybr.jpg" },
+        { nombre: "Tornado 293", precio: 13000, categoria: "hamburguesa", descripcion: "doble medallón, doble cheddar, morron asado y salsa pro tork + papas fritas", imagen: "./fotos/hamburguesas/tornado293.jpg" },
+        { nombre: "FAN", precio: 16500, categoria: "hamburguesa", descripcion: "triple medallón, triple cheddar, triple bacon crujientes y salsa butaquera + papas fritas", imagen: "./fotos/hamburguesas/fan.jpg" },
+        { nombre: "ax115", precio: 21000, categoria: "hamburguesa", descripcion: "5 medallón, 5 cheddar, 5 bacon crujientes y salsa butaquera + papas fritas", imagen: "./fotos/hamburguesas/ax115.jpg" },
         // Promos
-        { nombre: "Promo Smash", precio: 24000, categoria: "promo", descripcion: "Smash x3 + 3 papas fritas + 3 bebida. ¡El combo perfecto para compartir!", imagen: "./fotos/promociones/promo-smash.jpg" },
-        { nombre: "Promo Cripton", precio: 24000, categoria: "promo", descripcion: "crypton x3 + 3 papas fritas + 3 bebida. ¡Sabor y cantidad en una sola promo!", imagen: "./fotos/promociones/promo-crypton.jpg" },
-        { nombre: "Promo Wave", precio: 24000, categoria: "promo", descripcion: "Wave x3 + 3 papas fritas + 3 bebida. ¡Un combo de puro sabor!", imagen: "./fotos/promociones/promo-wave.jpg" },
-        { nombre: "Promo AX100", precio: 28000, categoria: "promo", descripcion: "AX100 x2 + 2 papas fritas + 2 bebida de elección. ¡Doble medallón, doble placer!", imagen: "./fotos/promociones/promo-ax100.jpeg" },
+        { nombre: "Promo Smash", precio: 27000, categoria: "promo", descripcion: "Smash x3 + 3 papas fritas + 3 bebida. ¡El combo perfecto para compartir!", imagen: "./fotos/promociones/promo-smash.jpg" },
+        { nombre: "Promo Cripton", precio: 27000, categoria: "promo", descripcion: "crypton x3 + 3 papas fritas + 3 bebida. ¡Sabor y cantidad en una sola promo!", imagen: "./fotos/promociones/promo-crypton.jpg" },
+        { nombre: "Promo Wave", precio: 27000, categoria: "promo", descripcion: "Wave x3 + 3 papas fritas + 3 bebida. ¡Un combo de puro sabor!", imagen: "./fotos/promociones/promo-wave.jpg" },
+        { nombre: "Promo AX100", precio: 30000, categoria: "promo", descripcion: "AX100 x2 + 2 papas fritas + 2 bebida de elección. ¡Doble medallón, doble placer!", imagen: "./fotos/promociones/promo-ax100.jpeg" },
         { nombre: "Promo Variant", precio: 36000, categoria: "promo", descripcion: "Variant x3 + 3 papas fritas + 3 bebida de elección. ¡Sabor único e irresistible!", imagen: "./fotos/promociones/promo variant.jpeg" },
         // Nuevas promos
-        { nombre: "promo ybr", precio: 30000, categoria: "promo", descripcion: "2 ybr + combo de papas fritas con cheddar y bacon + 2 bebidas", imagen: "./fotos/promociones/promo ybr.jpeg" },
-        { nombre: "promo fan", precio: 33000, categoria: "promo", descripcion: "2 fan + combo de papas fritas con cheddar y bacon + 2 bebidas", imagen: "./fotos/promociones/promo-fan.jpg" },
+        { nombre: "promo ybr", precio: 33000, categoria: "promo", descripcion: "2 ybr + combo de papas fritas con cheddar y bacon + 2 bebidas", imagen: "./fotos/promociones/promo ybr.jpeg" },
+        { nombre: "promo fan", precio: 38000, categoria: "promo", descripcion: "2 fan + combo de papas fritas con cheddar y bacon + 2 bebidas", imagen: "./fotos/promociones/promo-fan.jpg" },
         // Bebidas
-        { nombre: "Pepsi", precio: 2000, categoria: "bebidas", descripcion: "Gaseosa fría de 500ml. Pepsi", imagen: "./fotos/bebidas/pepsi.jpg" },
-        { nombre: "Seven Up", precio: 2000, categoria: "bebidas", descripcion: "Gaseosa fría de 500ml. Seven Up", imagen: "./fotos/bebidas/seven-up.jpg" },
+        { nombre: "Pepsi", precio: 2500, categoria: "bebidas", descripcion: "Gaseosa fría de 500ml. Pepsi", imagen: "./fotos/bebidas/pepsi.jpg" },
+        { nombre: "Seven Up", precio: 2500, categoria: "bebidas", descripcion: "Gaseosa fría de 500ml. Seven Up", imagen: "./fotos/bebidas/seven-up.jpg" },
         // Extras
         { nombre: "Aros de cebolla", precio: 5000, categoria: "extra", descripcion: "Aros de cebolla + papas fritas + alioli", imagen: "./fotos/extras/aros-de-cebolla-caseros-crujientes.jpg" },
         { nombre: "Bastones de mozzarella", precio: 7000, categoria: "extra", descripcion: "Bastones de mozzarella + papas fritas + alioli", imagen: "./fotos/extras/bastones-de-mozzarella.jpg" },
